@@ -8,5 +8,8 @@
 Environment Mountaincar-v0 
 ![image](https://user-images.githubusercontent.com/24397487/223571095-a8d09dd3-ccc1-48b0-b642-0c31cde8f563.png)
 
+create venv 
+activate
+install: pip install -r requirements/production.txt
 
-Use virtual environment  .venv python 
+Use virtual environment  .venv python  
