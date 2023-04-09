@@ -1,8 +1,5 @@
-
 import numpy as np
 import math
-
-
 
 class E_SARSA:
     def __init__(self, states_n, actions_n, alpha, gamma, epsilon):
@@ -23,22 +20,17 @@ class E_SARSA:
         self.reward = 0
         self.done = False
         self.q_table = np.zeros((self.states_n, self.actions_n))
-        
 
-    def update(
-        self, state, action, next_state, next_action, reward, terminated, truncated
-    ):
-        self._update(
-            state, action, next_state, next_action, reward, terminated, truncated
-        )
-        self.q_table[state, action] = self.q_table[state, action] + self.alpha * (
-            reward + ( np.mean(self.q_table[next_state, next_action])) - self.q_table[state, action]
-        )
+    def update(self, state, action, next_state, next_action, reward, terminated, truncated):
+        self._update(state, action, next_state, next_action, reward, terminated, truncated)
         
+        # valor esperado para el siguiente estado <> 
+        expected_value = np.sum(self.policy(next_state) * self.q_table[next_state])
 
-    def _update(
-        self, state, action, next_state, next_action, reward, terminated, truncated
-    ):
+        td_error = reward + self.gamma * expected_value - self.q_table[state, action]
+        self.q_table[state, action] += self.alpha * td_error
+
+    def _update(self, state, action, next_state, next_action, reward, terminated, truncated):
         if self.done:
             self.step = 0
             self.done = False
@@ -65,6 +57,12 @@ class E_SARSA:
             else:
                 return np.argmax(self.q_table[state])
 
+    def policy(self, state):
+        action_probs = np.ones(self.actions_n) * self.epsilon / self.actions_n
+        best_action = np.argmax(self.q_table[state])
+        action_probs[best_action] += 1 - self.epsilon
+        return action_probs
+
     def render(self, mode="step"):
         if mode == "step":
             print(
@@ -72,8 +70,7 @@ class E_SARSA:
                 end="",
             )
             print(
-                f"Next state: {self.next_state}, Next action: {self.next_action}, Reward: {self.reward}"
+                f"Next state: {self.next_state}, Reward: {self.reward}"
             )
-
         elif mode == "values":
             print(f"Q-Table: {self.q_table}")

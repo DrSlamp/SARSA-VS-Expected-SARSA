@@ -2,9 +2,8 @@ import sys
 import gym
 import gym_environments
 import numpy as np
-#
 from agent1 import E_SARSA
-
+from agent import SARSA
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -26,7 +25,7 @@ def calculate_state(env, value):
 
 
 def run(env, agent, selection_method, episodes):
-    for episode in range(1, episodes + 1): 
+    for episode in range(1, episodes + 1):
         if episode % 100 == 0:
             print(f"Episode: {episode}")
         observation, _ = env.reset()
@@ -37,6 +36,7 @@ def run(env, agent, selection_method, episodes):
             next_action = agent.get_action(
                 calculate_state(env, new_observation), selection_method
             )
+            
             agent.update(
                 calculate_state(env, observation),
                 action,
@@ -48,7 +48,6 @@ def run(env, agent, selection_method, episodes):
             )
             observation = new_observation
             action = next_action
-
 
 if __name__ == "__main__":
     episodes = 4000 if len(sys.argv) == 1 else int(sys.argv[1])
@@ -179,8 +178,3 @@ plt.legend()
   
 # function to show the plot
 plt.show()
-
-     
-
-
- 
